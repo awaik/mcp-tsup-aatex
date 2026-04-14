@@ -4,10 +4,7 @@
   "description": "MCP для AI-ассистентов: подключение Claude Code / Claude Desktop / Cursor к ЦУП ААТех",
   "private": true,
   "scripts": {
-    "release": "bash scripts/release.sh",
-    "version:patch": "npm version patch -m 'chore: release v%s'",
-    "version:minor": "npm version minor -m 'chore: release v%s'",
-    "version:major": "npm version major -m 'chore: release v%s'"
+    "release": "bash scripts/release.sh"
   },
   "license": "UNLICENSED"
 }

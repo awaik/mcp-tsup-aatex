@@ -1,0 +1,64 @@
+name: Auto Release
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: auto-release
+  cancel-in-progress: false
+
+jobs:
+  auto-release:
+    runs-on: ubuntu-latest
+    if: |
+      !contains(github.event.head_commit.message, '[skip ci]') &&
+      !startsWith(github.event.head_commit.message, 'chore(release):')
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure git
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Bump patch version
+        id: bump
+        run: |
+          CURRENT=$(jq -r .version package.json)
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT"
+          NEW="${MAJOR}.${MINOR}.$((PATCH + 1))"
+          jq --arg v "$NEW" '.version = $v' package.json > package.json.tmp
+          mv package.json.tmp package.json
+          echo "version=${NEW}"  >> "$GITHUB_OUTPUT"
+          echo "tag=v${NEW}"     >> "$GITHUB_OUTPUT"
+
+      - name: Commit, tag, push
+        run: |
+          git add package.json
+          git commit -m "chore(release): ${{ steps.bump.outputs.tag }} [skip ci]"
+          git tag ${{ steps.bump.outputs.tag }}
+          git push origin main
+          git push origin ${{ steps.bump.outputs.tag }}
+
+      - name: Build archives
+        run: |
+          NAME="mcp-tsup-aatex-${{ steps.bump.outputs.tag }}"
+          mkdir -p dist
+          git archive --format=zip    --prefix="${NAME}/" -o "dist/${NAME}.zip"    HEAD
+          git archive --format=tar.gz --prefix="${NAME}/" -o "dist/${NAME}.tar.gz" HEAD
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.bump.outputs.tag }}
+          files: |
+            dist/*.zip
+            dist/*.tar.gz
+          generate_release_notes: true
