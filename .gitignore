@@ -1,0 +1,29 @@
+# Секреты — реальный MCP-ключ никогда не должен попасть в git
+.mcp.json
+.mcp.json.local
+*.key
+*.pem
+
+# Архивы релизов
+dist/
+*.zip
+*.tar.gz
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Редакторы
+.vscode/
+.idea/
+*.swp
+*~
+
+# Node (если когда-нибудь появится)
+node_modules/
+
+# Локальные настройки Claude Code (не шарятся между юзерами)
+.claude/settings.local.json
+.claude/config.json
+.claude/1.mp3
+.claude/.DS_Store

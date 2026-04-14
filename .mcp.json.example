@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "aatex-cup": {
+      "type": "http",
+      "url": "https://app.aatex.ru/mcp",
+      "headers": {
+        "Authorization": "Bearer ВАШ_КЛЮЧ"
+      }
+    }
+  }
+}
