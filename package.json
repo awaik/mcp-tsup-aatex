@@ -1,6 +1,6 @@
 {
   "name": "mcp-tsup-aatex",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "MCP для AI-ассистентов: подключение Claude Code / Claude Desktop / Cursor к ЦУП ААТех",
   "private": true,
   "scripts": {
